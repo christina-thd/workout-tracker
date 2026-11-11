@@ -2,6 +2,13 @@
 
 A Home Assistant add-on for logging workouts and sports, for everyone in the house, with stats on how you're doing.
 
+<p>
+  <img src="images/sports.jpg" alt="Your sports, with sessions and time per sport" width="200">
+  <img src="images/stats.jpg" alt="Padel stats: sessions, time played, spending, win rate, heart rate and streak" width="200">
+  <img src="images/sessions.jpg" alt="Padel sessions by month, with scores and results" width="200">
+  <img src="images/gear.jpg" alt="Padel gear and what it cost" width="200">
+</p>
+
 - **Users:** everyone has their own sessions, gear and stats
 - **Sessions:** date, how long, how it felt, what it cost, notes, and your smartwatch's heart rate and calories
 - **Gear:** what you buy for each sport, counted in your spending
