@@ -1,6 +1,6 @@
 // A person's sport list, plus the link to their players and clubs.
 import { $, closest, escapeHtml } from '../shared/dom.js';
-import { dayLabel, duration, plural } from '../shared/format.js';
+import { duration, plural, shortDay } from '../shared/format.js';
 import { LISTS, sportsFor, tracks } from '../shared/sports.js';
 import { byNewest } from '../shared/stats.js';
 import { sportIcon } from '../ui/emoji.js';
@@ -17,7 +17,7 @@ export function renderSports({ person, sessions, today }) {
     const theirs = sessions.filter((s) => s.sport === sport.id).sort(byNewest);
     const minutes = theirs.reduce((sum, s) => sum + (s.minutes ?? 0), 0);
     const summary = theirs.length
-      ? [plural(theirs.length, 'session'), tracks(sport, 'time') && duration(minutes), `last ${dayLabel(theirs[0].date, today).toLowerCase()}`]
+      ? [plural(theirs.length, 'session'), tracks(sport, 'time') && duration(minutes), shortDay(theirs[0].date, today)]
         .filter(Boolean).join(' · ')
       : 'Nothing logged yet';
     return `<button type="button" class="sport-row" role="listitem" data-sport="${sport.id}">

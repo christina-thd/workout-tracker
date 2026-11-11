@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.1
+- Sports list shows the date of your last session
+- Easier number pad for scores
+- Simpler sessions list
+- Fixed charts showing black on iPhone
+
 ## 1.2.0
 - Moved to port 3500 (3501 for https)
 

@@ -1,13 +1,10 @@
 // Sessions tab: sessions by month, newest first.
 import { $, escapeHtml } from '../shared/dom.js';
-import { dayLabel, duration, money, plural } from '../shared/format.js';
-import {
-  fieldShows, opponentsOf, parseScore, partnerField, resultField, scoreField, tracks,
-} from '../shared/sports.js';
+import { dayLabel, duration, plural } from '../shared/format.js';
+import { fieldShows, parseScore, partnerField, resultField, scoreField, tracks } from '../shared/sports.js';
 import { byNewest } from '../shared/stats.js';
 import { feelOf } from '../shared/workouts.js';
 import { emoji, sportIcon } from '../ui/emoji.js';
-import { icon } from '../ui/icons.js';
 import { groupByMonth } from './rows.js';
 
 /** @typedef {import('../shared/workouts.js').Session} Session */
@@ -39,18 +36,15 @@ function rowIcon(sport, s) {
   return `<span class="row-emoji">${option?.emoji ? emoji(option.emoji, option.label) : sportIcon(sport)}</span>`;
 }
 
-function sessionRow(sport, s, today, currency) {
+/** Kept short: the day and the score; the rest is a tap away. */
+function sessionRow(sport, s, today) {
   const result = resultField(sport);
   const score = scoreField(sport);
-  const opponents = opponentsOf(sport, s.details);
   const meta = [`<span>${escapeHtml(dayLabel(s.date, today))}</span>`];
   const sets = score ? parseScore(s.details[score.key], score.maxSets) : null;
   if (sets) meta.push(`<span class="score">${sets.map(([a, b, ta, tb]) => `<span>${a}–${b}${ta != null ? `<small>(${ta}–${tb})</small>` : ''}</span>`).join('')}</span>`);
-  if (opponents.length) meta.push(`<span>vs ${escapeHtml(opponents.join(' & '))}</span>`);
-  if (s.details.venue) meta.push(`<span>${escapeHtml(String(s.details.venue))}</span>`);
-  if (s.cost != null) meta.push(`<span>${icon('coin')}${escapeHtml(money(s.cost, currency))}</span>`);
-  if (s.avgHr != null) meta.push(`<span>${icon('heart')}${s.avgHr}</span>`);
-  if (s.note) meta.push(`<span>${icon('note')}</span>`);
+  // with no one to name in the title (snowboard), the place says which day it was
+  if (!partnerField(sport) && s.details.venue) meta.push(`<span>${escapeHtml(String(s.details.venue))}</span>`);
   const outcome = result ? s.details[result.key] : null;
   const label = outcome ? optionOf(sport, s, result.key)?.label : null;
   return `<li><button type="button" class="row" data-session="${s.id}">
@@ -60,13 +54,13 @@ function sessionRow(sport, s, today, currency) {
   </button></li>`;
 }
 
-/** @param {{ sport: Sport, sessions: Session[], today: string, currency: string }} view */
-export function renderSessions({ sport, sessions, today, currency }) {
+/** @param {{ sport: Sport, sessions: Session[], today: string }} view */
+export function renderSessions({ sport, sessions, today }) {
   const list = [...sessions].sort(byNewest);
   $('sessionList').innerHTML = list.length
     ? groupByMonth(list, {
       summary: (month) => `<span>${plural(month.length, 'session')}${tracks(sport, 'time') ? ` · ${duration(month.reduce((t, s) => t + (s.minutes ?? 0), 0))}` : ''}</span>`,
-      html: (s) => sessionRow(sport, s, today, currency),
+      html: (s) => sessionRow(sport, s, today),
     })
     : `<p class="empty">Log your first ${escapeHtml(sport.name.toLowerCase())} session with the + button.</p>`;
 }

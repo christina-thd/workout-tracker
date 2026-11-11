@@ -61,7 +61,13 @@ export function dayLabel(day, today) {
   });
 }
 
-export const monthLabel = (day) => dayDate(day).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+/** 7 Nov; with the year when it isn't this year's. */
+export function shortDay(day, today) {
+  const sameYear = day.slice(0, 4) === today.slice(0, 4);
+  return dayDate(day).toLocaleDateString(undefined, { day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) });
+}
+
+export const monthLabel =(day) => dayDate(day).toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
 /** 950, 1.2K, 12K. */
 export function compact(value) {

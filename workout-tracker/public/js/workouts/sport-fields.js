@@ -265,10 +265,10 @@ export function createSportFields({ root, getNames, addName }) {
     const choices = side > 1 ? tiebreakChoices(set, side) : GAMES;
     openMenu(button, {
       label: button.getAttribute('aria-label'),
-      columns: side > 1 ? 5 : 3,
+      columns: side > 1 ? 5 : 4, // games: 0–3 above 4–7
       options: [
-        { value: '', label: '–', selected: value == null },
         ...choices.map((n) => ({ value: String(n), label: String(n), selected: n === value })),
+        ...(value == null ? [] : [{ value: '', label: 'Clear', action: true }]),
       ],
       onPick: (picked) => {
         set[side] = picked === '' ? null : Number(picked);

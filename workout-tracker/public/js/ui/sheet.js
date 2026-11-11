@@ -139,6 +139,7 @@ export function createSheet(layer, { onClose, hasChanges } = {}) {
       pushBack(hide);
       panel.style.transform = '';
       layer.hidden = false;
+      for (const body of panel.querySelectorAll('.sheet-body')) body.scrollTop = 0; // not where it was last time
       void panel.offsetHeight; // force reflow so it slides in
       layer.classList.add('open');
     },

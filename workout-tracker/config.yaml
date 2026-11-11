@@ -1,6 +1,6 @@
 name: "Workout Tracker"
 description: "Log your workouts and sports, like padel, tennis, basketball, snowboard and the gym, with stats on how you're doing"
-version: "1.2.0"
+version: "1.2.1"
 slug: "workout_tracker"
 init: false
 arch:

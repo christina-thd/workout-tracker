@@ -18,8 +18,9 @@ export const TABS = Object.freeze(['stats', 'sessions', 'gear']);
 /** The tab to show: Stats instead of Gear for a sport without gear (a workout). */
 export const tabFor = (sport, tab) => (tab === 'gear' && !sport.gear.length ? 'stats' : tab);
 
-// chart colors come from CSS tokens
-const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+// chart colors are CSS tokens, resolved by the browser when drawn (reading them up front can run before the
+// stylesheet has loaded, e.g. on iPhone, and leave every chart black)
+const css = (name) => `var(${name})`;
 const COLORS = {
   time: css('--series-1'),
   sessionCost: css('--series-3'),
@@ -74,7 +75,7 @@ export function renderDashboard({ sport, tab, sessions, purchases, range, today,
   }
   $('addButton').setAttribute('aria-label', tab === 'gear' ? 'Add a purchase' : 'Log a session');
 
-  if (tab === 'sessions') return renderSessions({ sport, sessions, today, currency });
+  if (tab === 'sessions') return renderSessions({ sport, sessions, today });
   if (tab === 'gear') return renderGear({ sport, purchases, today, currency });
   renderStats({ sport, sessions, purchases, range, today, currency });
 }

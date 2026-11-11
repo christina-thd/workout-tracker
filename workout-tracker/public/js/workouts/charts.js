@@ -62,8 +62,8 @@ export function columnChart({ width, height = 160, items, series, axis, valueLab
       y -= h;
       // only the top part is rounded; lower parts end 2px short to leave a gap
       return k === parts.length - 1
-        ? `<path d="${columnPath(x, y + h, barW, h)}" fill="${part.color}" pointer-events="none"/>`
-        : `<rect x="${r1(x)}" y="${r1(y + 2)}" width="${r1(barW)}" height="${r1(Math.max(h - 2, 1))}" fill="${part.color}" pointer-events="none"/>`;
+        ? `<path d="${columnPath(x, y + h, barW, h)}" style="fill:${part.color}" pointer-events="none"/>`
+        : `<rect x="${r1(x)}" y="${r1(y + 2)}" width="${r1(barW)}" height="${r1(Math.max(h - 2, 1))}" style="fill:${part.color}" pointer-events="none"/>`;
     }).join('');
     const hit = `<rect class="hit" x="${r1(x0)}" y="${PAD.top}" width="${r1(band)}" height="${plotH}" data-tip="${escapeHtml(item.tip)}"/>`;
     const label = (items.length - 1 - i) % step === 0
@@ -108,10 +108,10 @@ export function lineChart({ width, height = 180, points, series }) {
     if (!pts.length) return '';
     const d = pts.map(([px, py], i) => `${i ? 'L' : 'M'}${r1(px)},${r1(py)}`).join('');
     const dots = (showDots ? pts : [pts.at(-1)]).map(([px, py]) =>
-      `<circle cx="${r1(px)}" cy="${r1(py)}" r="4" fill="${s.color}" stroke="var(--surface)" stroke-width="2" pointer-events="none"/>`).join('');
+      `<circle cx="${r1(px)}" cy="${r1(py)}" r="4" style="fill:${s.color};stroke:var(--surface)" stroke-width="2" pointer-events="none"/>`).join('');
     const [ex, ey, ev] = pts.at(-1);
     ends.push({ x: ex, y: ey, value: ev });
-    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>${dots}`;
+    return `<path d="${d}" style="fill:none;stroke:${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" pointer-events="none"/>${dots}`;
   }).join('');
 
   // skip end labels if they'd overlap; tooltips still show the values
