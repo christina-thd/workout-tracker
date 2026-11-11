@@ -58,7 +58,8 @@ public/                   browser (plain ES modules, no build step)
                           or a number pad), tap-twice (a second tap to delete), discard ("Discard changes?" when a
                           sheet with unsaved changes is closed)
   js/workouts/            home (who's this?), person-sheet (a user: new, rename, emoji, delete), person-chip (the
-                          user's emoji and name, top right), sports-view (a user's sports), lists-sheet (players
+                          user's emoji and name, top right of the sports), sports-sheet (the ⚙ next to it: each sport
+                          on or off), sports-view (a user's sports), lists-sheet (players
                           and clubs), dashboard (the tabs, and Stats: tiles and charts), charts (SVG columns, lines,
                           split bars, tooltips), session-list and gear-list (the other two tabs, by month: rows),
                           session-sheet with sport-fields (the sport's own fields: buttons, dropdowns, the score
@@ -73,9 +74,14 @@ test/                     node:test suites
 The server validates and applies the action, saves, and broadcasts the new view to every screen over
 `GET /api/events` (Server-Sent Events). Screens never change sessions locally; they only render the latest view.
 
-**Actions:** `addPerson`, `renamePerson`, `setPersonEmoji`, `removePerson` (with everything of theirs), `addToList`,
-`removeFromList` (a person's players or clubs), `addSession`, `editSession` (replaces every field: the sheet sends them
-all), `removeSession`, `addPurchase`, `editPurchase`, `removePurchase`. See `src/workouts/actions.js`.
+**Actions:** `addPerson`, `renamePerson`, `setPersonEmoji`, `setSportShown` (a sport on or off for them),
+`removePerson` (with everything of theirs), `addToList`, `removeFromList` (a person's players, clubs or places),
+`addSession`, `editSession` (replaces every field: the sheet sends them all), `removeSession`, `addPurchase`,
+`editPurchase`, `removePurchase`. See `src/workouts/actions.js`.
+
+**Sports on and off:** each person has `hiddenSports`, the ones they turned off (stored that way round so a new sport
+is on for everyone). Off only hides the sport (`sportsFor` in sports.js): its sessions and purchases stay, and the
+page goes back to the sports list if the sport it was on is turned off. At least one stays on.
 
 **Sessions** have what every sport has (`date`, `minutes`, `feel`, `cost`, `avgHr`, `maxHr`, `calories`, `note`) and
 the sport's own `details`. Dates are plain days (`YYYY-MM-DD`, the day as you'd say it), so time zones never move a
@@ -87,11 +93,14 @@ count in the Stats tab's spending next to what sessions cost, and have their own
 **Sports** are data, in `public/js/shared/sports.js`: each has fields and gear, and the server validates `details`
 against them (`cleanDetails`) while the session sheet builds its form from them (`js/workouts/sport-fields.js`). A
 field is a `choice` (buttons), a `pick` (a dropdown of one of the person's lists; `count` for several) or a `score`
-(games per set). It can show only `when` another has a value (a match's score and result), be the `result` the win
-rate comes from, or be `remember`ed from the last session. **Adding a sport is adding an entry there**: the sports
+(games per set). It can show only `when` other fields have those values (a match's score; tennis's partner only in
+doubles), be the `result` the win rate comes from, the `partner` the partners stats count, or be `remember`ed from
+the last session. Fields several sports share (the session type, score, result, club, court, racket gear) are
+defined once at the top of the file. **Adding a sport is adding an entry there**: the sports
 screen, the sheet, validation and the dashboard pick it up.
 
-**Players and clubs** are lists on each person (`person.players`, `person.clubs`). A session stores the names it
+**Players, clubs and places** are lists on each person (`person.players`, `person.clubs`, `person.places`: one per
+`LISTS` entry, filled in on load for people saved before a list existed). A session stores the names it
 picked, not references, so taking a name off a list never changes a session; names a session picks are added to the
 lists. Schema 1 (before lists) fills them from the names its sessions used.
 
@@ -140,7 +149,12 @@ under `/api/hassio_ingress/<token>/`.
 ## Adding a sport
 
 1. Add an entry to `SPORTS` in `public/js/shared/sports.js`: `id`, `name`, `emoji`, its `fields` (or none) and its
-   `gear` kinds. The sports screen, the session sheet, validation and the stats pick it up; a `result` field adds the
+   `gear` kinds. A sport Unicode has no emoji for gets its own `image` too (an SVG in `public/img/sports/`, drawn
+   flat like Twemoji, as padel's is). `tracks` leaves out fields every session otherwise has: `{ time, feel, cost,
+   watch }` set to false (snowboard: no smartwatch; workout: none of them). The sheet hides them, the server stores
+   them as null, and the stats drop their tiles and charts (without time, a Sessions chart takes Time played's
+   place). `gear: []` removes the Gear tab. `durations` and `defaultMinutes` suit longer sessions (snowboard: 2h–6h,
+   starting at 4h). A new kind of name (like `places`) is an entry in `LISTS`. The sports screen, the session sheet, validation and the stats pick it up; a `result` field adds the
    win rate and results, and a single `pick` of players the partners card.
 2. Add a test for anything new it validates (`test/sports.test.js`).
 3. Document it: a row in the repository's `README.md` table, a section under **Sports** in this add-on's `README.md`

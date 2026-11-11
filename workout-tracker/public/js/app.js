@@ -2,14 +2,14 @@
 // The server is the source of truth; views only send actions, never mutate locally.
 import { subscribe } from './shared/api.js';
 import { $ } from './shared/dom.js';
-import { sportOf } from './shared/sports.js';
+import { sportOf, sportsFor } from './shared/sports.js';
 import { RANGE_IDS } from './shared/stats.js';
 import { storage } from './shared/storage.js';
 import { localDate } from './shared/workouts.js';
-import { renderDashboard, TABS, wireDashboard } from './workouts/dashboard.js';
+import { renderDashboard, tabFor, TABS, wireDashboard } from './workouts/dashboard.js';
 import { renderHome, wireHome } from './workouts/home.js';
 import { createListsSheet } from './workouts/lists-sheet.js';
-import { renderPersonChip } from './workouts/person-chip.js';
+import { createSportsSheet } from './workouts/sports-sheet.js';
 import { createPersonSheet } from './workouts/person-sheet.js';
 import { createPurchaseSheet } from './workouts/purchase-sheet.js';
 import { createSessionSheet } from './workouts/session-sheet.js';
@@ -43,6 +43,7 @@ const mine = (list) => list.filter((x) => x.personId === person);
 const sessionSheet = createSessionSheet({ getPeople: () => people, getSessions: () => sessions, getCurrency: () => currency });
 const purchaseSheet = createPurchaseSheet({ getPurchases: () => purchases, getCurrency: () => currency });
 const listsSheet = createListsSheet({ getPerson });
+const sportsSheet = createSportsSheet({ getPerson });
 let pickNext = null; // the very first person goes straight to their sports
 const personSheet = createPersonSheet({
   getPeople: () => people,
@@ -65,7 +66,7 @@ const personSheet = createPersonSheet({
 function pickPerson(id) {
   person = id;
   storage.set('workouts.person', id);
-  sport = sportOf(storage.get(sportKey())) ? storage.get(sportKey()) : null;
+  sport = rememberedSport();
   pushBack(() => showScreen('home'));
   showScreen('sports');
 }
@@ -117,24 +118,38 @@ function keepChoicesValid() {
     person = null;
     storage.set('workouts.person', null);
     if (screen !== 'home') goHome();
+    return;
+  }
+  // a sport they turned off (here or on another device): back to their sports
+  if (sport && !isShown(sport)) {
+    sport = null;
+    if (screen === 'dashboard') goBack();
   }
 }
+
+/** A sport the current user has on. */
+const isShown = (id) => sportsFor(getPerson()).some((s) => s.id === id);
+
+/** The sport this device was on for the user, if it's still one they have on. */
+const rememberedSport = () => {
+  const id = storage.get(sportKey());
+  return sportOf(id) && isShown(id) ? id : null;
+};
 
 function render() {
   if (!loaded) return;
   const today = localDate();
   $('addButton').hidden = screen !== 'dashboard';
   document.body.classList.toggle('has-fab', screen === 'dashboard');
-  if (screen === 'home') return renderHome({ people, sessions, current: person, today });
+  if (screen === 'home') return renderHome({ people, current: person });
   const who = getPerson();
   if (!who) return;
   if (screen === 'sports') return renderSports({ person: who, sessions: mine(sessions), today });
   const current = sportOf(sport);
   if (!current) return;
-  renderPersonChip($('personButton'), who);
   renderDashboard({
     sport: current,
-    tab,
+    tab: tabFor(current, tab),
     sessions: mine(sessions).filter((s) => s.sport === sport),
     purchases: mine(purchases).filter((p) => p.sport === sport),
     range,
@@ -144,7 +159,7 @@ function render() {
 }
 
 function openNew() {
-  if (tab === 'gear') purchaseSheet.open({ personId: person, sportId: sport });
+  if (tabFor(sportOf(sport), tab) === 'gear') purchaseSheet.open({ personId: person, sportId: sport });
   else sessionSheet.open({ personId: person, sportId: sport });
 }
 
@@ -153,7 +168,12 @@ function openNew() {
 trackVisibleViewport();
 showTextWhenMissing();
 wireHome({ onPick: pickPerson, onEdit: (id) => personSheet.open(id), onAdd: () => personSheet.open() });
-wireSports({ onPick: openSport, onSwitchPerson: goHome, onLists: () => listsSheet.open() });
+wireSports({
+  onPick: openSport,
+  onSwitchPerson: goHome,
+  onLists: () => listsSheet.open(),
+  onChooseSports: () => sportsSheet.open(),
+});
 wireDashboard({
   onTab: setTab,
   onRange: setRange,
@@ -161,7 +181,6 @@ wireDashboard({
   onOpenPurchase: (id) => purchaseSheet.open({ personId: person, sportId: sport, purchaseId: id }),
   onBack: () => goBack(),
 });
-$('personButton').addEventListener('click', goHome);
 $('addButton').innerHTML = icon('plus');
 $('addButton').addEventListener('click', openNew);
 
@@ -201,7 +220,7 @@ subscribe((view) => {
   keepChoicesValid();
   if (first) {
     // restore the last screen, with history entries beneath it so back works
-    sport = person && sportOf(storage.get(sportKey())) ? storage.get(sportKey()) : null;
+    sport = getPerson() ? rememberedSport() : null;
     if (getPerson()) {
       pushBack(() => showScreen('home'));
       if (sport) pushBack(() => showScreen('sports'));
@@ -214,6 +233,7 @@ subscribe((view) => {
   sessionSheet.refresh();
   purchaseSheet.refresh();
   listsSheet.refresh();
+  sportsSheet.refresh();
 }, showConnection);
 
 // EventSource reconnects on its own; only show Offline after a few seconds down.

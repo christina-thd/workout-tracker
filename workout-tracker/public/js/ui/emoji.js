@@ -24,6 +24,16 @@ export function emoji(char, label = '') {
   return `<img class="emoji-img" src="${emojiUrl(char)}" alt="${alt}" draggable="false"${label ? ` title="${escapeHtml(label)}"` : ' aria-hidden="true"'}>`;
 }
 
+/**
+ * A sport's icon: its own image when it has one (padel), else its emoji.
+ * @param {{ emoji: string, image?: string }} sport
+ */
+export function sportIcon(sport) {
+  return sport.image
+    ? `<img class="emoji-img" src="${escapeHtml(sport.image)}" alt="" aria-hidden="true" draggable="false">`
+    : emoji(sport.emoji);
+}
+
 /** Call once at startup. */
 export function showTextWhenMissing() {
   document.addEventListener('error', (e) => {

@@ -1,7 +1,7 @@
 {
   "name": "Workout Tracker",
   "short_name": "Workouts",
-  "description": "Log your padel sessions and workouts, with charts of how you're doing",
+  "description": "Log your workouts and sports, like padel, tennis, basketball, snowboard and the gym, with stats on how you're doing",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

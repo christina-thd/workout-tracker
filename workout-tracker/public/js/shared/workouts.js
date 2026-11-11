@@ -1,12 +1,15 @@
 // Data model and limits shared by server validation and the page.
 
 /**
- * @typedef {{ id: string, name: string, emoji: string, players: string[], clubs: string[], createdAt: number }} Person
+ * @typedef {{ id: string, name: string, emoji: string, players: string[], clubs: string[], places: string[],
+ *   hiddenSports: string[], createdAt: number }} Person
+ *   hiddenSports: the sports they turned off (hidden, their data kept); new sports are on for everyone
  * @typedef {'chill' | 'good' | 'intense' | 'exhausting'} Feel
- * @typedef {{ id: string, personId: string, sport: string, date: string, minutes: number, feel: Feel,
+ * @typedef {{ id: string, personId: string, sport: string, date: string, minutes: number | null, feel: Feel | null,
  *   cost: number | null, avgHr: number | null, maxHr: number | null, calories: number | null, note: string,
  *   details: import('./sports.js').Details, createdAt: number, updatedAt: number }} Session
- *   date is a local calendar day with no time zone; cost null means not entered, 0 means free
+ *   date is a local calendar day with no time zone; cost null means not entered, 0 means free; minutes and feel are
+ *   null for a sport that doesn't track them (sports.js `tracks`)
  * @typedef {{ id: string, personId: string, sport: string, date: string, item: string, category: string,
  *   cost: number, note: string, createdAt: number, updatedAt: number }} Purchase
  */

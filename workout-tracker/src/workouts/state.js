@@ -1,5 +1,7 @@
 import { randomBytes } from 'node:crypto';
-import { cleanDetails, cleanName, LISTS, MAX_LIST_SIZE, sportOf } from '../../public/js/shared/sports.js';
+import {
+  cleanDetails, cleanName, hasWatch, LISTS, MAX_LIST_SIZE, SPORT_IDS, sportOf, tracks,
+} from '../../public/js/shared/sports.js';
 import {
   DEFAULT_FEEL, FEEL_IDS, isDate, isEmoji, MAX_COST, MAX_ITEM, MAX_MINUTES, MAX_NAME, MAX_NOTE, MAX_PEOPLE,
   MAX_PURCHASES, MAX_SESSIONS, pickPersonEmoji, WATCH_LIMITS,
@@ -55,6 +57,12 @@ export function cleanList(value) {
   return names.slice(0, MAX_LIST_SIZE);
 }
 
+/** The sports a person turned off: known ones, once each, never all of them. */
+function hiddenSports(value) {
+  const hidden = SPORT_IDS.filter((id) => Array.isArray(value) && value.includes(id));
+  return hidden.length < SPORT_IDS.length ? hidden : [];
+}
+
 function normalizePerson(raw, now, taken) {
   if (!raw || typeof raw !== 'object') return null;
   const name = cleanText(raw.name, MAX_NAME);
@@ -64,6 +72,7 @@ function normalizePerson(raw, now, taken) {
     name,
     emoji: isEmoji(raw.emoji) ? raw.emoji : pickPersonEmoji(taken),
     ...Object.fromEntries(LISTS.map((l) => [l.id, cleanList(raw[l.id])])),
+    hiddenSports: hiddenSports(raw.hiddenSports),
     createdAt: toTime(raw.createdAt, now),
   };
 }
@@ -71,20 +80,24 @@ function normalizePerson(raw, now, taken) {
 function normalizeSession(raw, now, personIds) {
   if (!raw || typeof raw !== 'object' || !personIds.has(raw.personId)) return null;
   const sport = sportOf(raw.sport);
-  const minutes = wholeOrNull(raw.minutes, 1, MAX_MINUTES);
-  if (!sport || !isDate(raw.date) || minutes == null) return null;
+  if (!sport || !isDate(raw.date)) return null;
+  // what the sport doesn't track is null; a timed sport's session needs its minutes
+  const timed = tracks(sport, 'time');
+  const minutes = timed ? wholeOrNull(raw.minutes, 1, MAX_MINUTES) : null;
+  if (timed && minutes == null) return null;
   const createdAt = toTime(raw.createdAt, now);
+  const watch = hasWatch(sport);
   return {
     id: isId(raw.id) ? raw.id : newId(),
     personId: raw.personId,
     sport: sport.id,
     date: raw.date,
     minutes,
-    feel: FEEL_IDS.includes(raw.feel) ? raw.feel : DEFAULT_FEEL,
-    cost: costOrNull(raw.cost),
-    avgHr: wholeOrNull(raw.avgHr, WATCH_LIMITS.avgHr.min, WATCH_LIMITS.avgHr.max),
-    maxHr: wholeOrNull(raw.maxHr, WATCH_LIMITS.maxHr.min, WATCH_LIMITS.maxHr.max),
-    calories: wholeOrNull(raw.calories, WATCH_LIMITS.calories.min, WATCH_LIMITS.calories.max),
+    feel: !tracks(sport, 'feel') ? null : FEEL_IDS.includes(raw.feel) ? raw.feel : DEFAULT_FEEL,
+    cost: tracks(sport, 'cost') ? costOrNull(raw.cost) : null,
+    avgHr: watch ? wholeOrNull(raw.avgHr, WATCH_LIMITS.avgHr.min, WATCH_LIMITS.avgHr.max) : null,
+    maxHr: watch ? wholeOrNull(raw.maxHr, WATCH_LIMITS.maxHr.min, WATCH_LIMITS.maxHr.max) : null,
+    calories: watch ? wholeOrNull(raw.calories, WATCH_LIMITS.calories.min, WATCH_LIMITS.calories.max) : null,
     note: cleanText(raw.note, MAX_NOTE, { multiline: true }),
     details: cleanDetails(sport, raw.details, { strict: false }),
     createdAt,

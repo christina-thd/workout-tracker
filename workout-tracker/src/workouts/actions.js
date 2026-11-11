@@ -1,4 +1,6 @@
-import { cleanDetails, cleanName, LIST_IDS, MAX_LIST_SIZE, sportOf, SPORT_IDS } from '../../public/js/shared/sports.js';
+import {
+  cleanDetails, cleanName, hasWatch, LIST_IDS, MAX_LIST_SIZE, sportOf, SPORT_IDS, tracks,
+} from '../../public/js/shared/sports.js';
 import {
   DEFAULT_FEEL, FEEL_IDS, isDate, isEmoji, MAX_COST, MAX_ITEM, MAX_MINUTES, MAX_NAME, MAX_NOTE, MAX_PEOPLE,
   MAX_PURCHASES, MAX_SESSIONS, pickPersonEmoji, WATCH_LIMITS,
@@ -85,13 +87,17 @@ function listId(value) {
   return value;
 }
 
-/** Validates everything up front so a bad input throws before anything changes. */
-function sessionFields(input) {
+/**
+ * Validates everything up front so a bad input throws before anything changes. What the sport doesn't track
+ * (`tracks` in sports.js: a workout's time, feel and cost; snowboard's smartwatch) isn't kept.
+ */
+function sessionFields(sport, input) {
+  if (!hasWatch(sport)) input = { ...input, avgHr: null, maxHr: null, calories: null };
   const fields = {
     date: date(input.date),
-    minutes: whole(input.minutes, 'minutes', 1, MAX_MINUTES, { optional: false }),
-    feel: feel(input.feel),
-    cost: money(input.cost),
+    minutes: tracks(sport, 'time') ? whole(input.minutes, 'minutes', 1, MAX_MINUTES, { optional: false }) : null,
+    feel: tracks(sport, 'feel') ? feel(input.feel) : null,
+    cost: tracks(sport, 'cost') ? money(input.cost) : null,
     avgHr: whole(input.avgHr, 'average heart rate', WATCH_LIMITS.avgHr.min, WATCH_LIMITS.avgHr.max),
     maxHr: whole(input.maxHr, 'max heart rate', WATCH_LIMITS.maxHr.min, WATCH_LIMITS.maxHr.max),
     calories: whole(input.calories, 'calories', WATCH_LIMITS.calories.min, WATCH_LIMITS.calories.max),
@@ -143,8 +149,8 @@ const handlers = {
       id: newId(),
       name: personName(state, name),
       emoji: emojiOrNull(emoji) ?? pickPersonEmoji(state.people),
-      players: [],
-      clubs: [],
+      ...Object.fromEntries(LIST_IDS.map((list) => [list, []])),
+      hiddenSports: [],
       createdAt: now,
     };
     state.people.push(person);
@@ -160,6 +166,17 @@ const handlers = {
     const person = getPerson(state, personId);
     if (!isEmoji(emoji)) throw new ActionError('emoji must be a single emoji');
     person.emoji = emoji;
+  },
+
+  /** Turns a sport on or off for someone. Off only hides it: its sessions and purchases are kept. */
+  setSportShown(state, { personId, sport, shown }) {
+    const person = getPerson(state, personId);
+    const id = getSport(sport).id;
+    if (typeof shown !== 'boolean') throw new ActionError('shown must be true or false');
+    const hidden = person.hiddenSports.filter((s) => s !== id);
+    if (!shown) hidden.push(id);
+    if (hidden.length >= SPORT_IDS.length) throw new ActionError('Keep at least one sport on');
+    person.hiddenSports = SPORT_IDS.filter((s) => hidden.includes(s));
   },
 
   removePerson(state, { personId }) {
@@ -193,7 +210,7 @@ const handlers = {
       id: newId(),
       personId: person.id,
       sport: sport.id,
-      ...sessionFields(input),
+      ...sessionFields(sport, input),
       details: details(sport, input.details),
       createdAt: now,
       updatedAt: now,
@@ -207,7 +224,7 @@ const handlers = {
   editSession(state, input, now) {
     const session = getSession(state, input.sessionId);
     const sport = sportOf(session.sport);
-    const fields = sessionFields(input);
+    const fields = sessionFields(sport, input);
     const cleaned = details(sport, input.details);
     rememberPicks(getPerson(state, session.personId), sport, cleaned);
     Object.assign(session, fields, { details: cleaned, updatedAt: now });

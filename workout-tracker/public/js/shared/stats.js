@@ -111,7 +111,7 @@ export function bucketize(sessions, rangeId, today, purchases = []) {
     const bucket = bucketOf(s.date);
     if (!bucket) continue;
     bucket.count += 1;
-    bucket.minutes += s.minutes;
+    bucket.minutes += s.minutes ?? 0;
     bucket.cost += s.cost ?? 0;
   }
   for (const p of purchases) {
@@ -144,7 +144,7 @@ export function summarize(sessions, resultKey = null, purchases = []) {
   const played = results.win + results.loss + results.draw;
   return {
     count: sessions.length,
-    minutes: sessions.reduce((sum, s) => sum + s.minutes, 0),
+    minutes: sessions.reduce((sum, s) => sum + (s.minutes ?? 0), 0),
     cost: cents(costs.reduce((sum, s) => sum + s.cost, 0)),
     costCount: costs.length,
     gear: cents(purchases.reduce((sum, p) => sum + p.cost, 0)),

@@ -4,14 +4,18 @@ Log your workouts and sports, what you buy for them, and see how you're doing, f
 
 ## Features
 
-- A profile per user in the house
+- A profile per user in the house, with the sports they choose
 - Sessions: duration, how it felt, cost, notes and smartwatch numbers
 - Gear purchases, counted in your spending
 - Stats and charts for the last month, 3 months, year or all time
 
 ## Sports
 
-- 🎾 **Padel:** matches with the score and tie-breaks, partners and clubs, and who you win with most
+- **Padel:** matches and training, set-by-set scores, partners, opponents and clubs
+- **Tennis:** singles or doubles, set-by-set scores, court surface
+- **Basketball:** practice and games, with results
+- **Snowboard:** days on the slopes, where and what it cost
+- **Workout:** a quick log of leg, arm or torso days
 
 ## Installation
 

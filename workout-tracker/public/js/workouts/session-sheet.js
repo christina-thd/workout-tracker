@@ -2,10 +2,10 @@
 import { sendAction } from '../shared/api.js';
 import { $, closest, escapeHtml, numberValue } from '../shared/dom.js';
 import { currencySymbol, duration } from '../shared/format.js';
-import { sportOf } from '../shared/sports.js';
+import { hasWatch, sportOf, tracks } from '../shared/sports.js';
 import { byNewest } from '../shared/stats.js';
 import { DEFAULT_FEEL, DURATIONS, FEELS, isDate, localDate, MAX_MINUTES, WATCH_LIMITS } from '../shared/workouts.js';
-import { emoji } from '../ui/emoji.js';
+import { emoji, sportIcon } from '../ui/emoji.js';
 import { icon } from '../ui/icons.js';
 import { createSheet } from '../ui/sheet.js';
 import { tapTwice } from '../ui/tap-twice.js';
@@ -67,7 +67,7 @@ export function createSessionSheet({ getPeople, getSessions, getCurrency }) {
 
   function renderDurations() {
     const value = Number(minutes.value);
-    $('sessionDurations').innerHTML = DURATIONS.map((m) =>
+    $('sessionDurations').innerHTML = (sport?.durations ?? DURATIONS).map((m) =>
       `<button type="button" class="chip${m === value ? ' selected' : ''}" data-minutes="${m}">${duration(m)}</button>`).join('');
   }
   $('sessionDurations').addEventListener('click', (e) => {
@@ -120,13 +120,16 @@ export function createSessionSheet({ getPeople, getSessions, getCurrency }) {
   /** null after showing the first validation error. */
   function collect() {
     for (const el of form.querySelectorAll('.invalid')) el.classList.remove('invalid');
-    if (!isDate(date.value)) return showError('Pick the day you played.', date), null;
-    const mins = numberValue(minutes);
-    if (!Number.isInteger(mins) || mins < 1 || mins > MAX_MINUTES) return showError('How long was it, in minutes?', minutes), null;
-    const money = numberValue(cost);
+    if (!isDate(date.value)) return showError('Pick the day of the session.', date), null;
+    const timed = tracks(sport, 'time');
+    const mins = timed ? numberValue(minutes) : null;
+    if (timed && !(Number.isInteger(mins) && mins >= 1 && mins <= MAX_MINUTES)) {
+      return showError('How long was it, in minutes?', minutes), null;
+    }
+    const money = tracks(sport, 'cost') ? numberValue(cost) : null;
     if (money != null && !(money >= 0)) return showError("The cost isn't a number.", cost), null;
-    const watch = {};
-    for (const { key, el, name } of watchFields) {
+    const watch = { avgHr: null, maxHr: null, calories: null };
+    for (const { key, el, name } of hasWatch(sport) ? watchFields : []) {
       const value = numberValue(el);
       const { min, max } = WATCH_LIMITS[key];
       if (value != null && !(Number.isInteger(value) && value >= min && value <= max)) {
@@ -142,7 +145,8 @@ export function createSessionSheet({ getPeople, getSessions, getCurrency }) {
     if (fields.isAdding) return showError('Add the new name first, or cancel it.'), null;
     showError('');
     return {
-      date: date.value, minutes: mins, feel, cost: money == null ? null : Math.round(money * 100) / 100,
+      date: date.value, minutes: mins, feel: tracks(sport, 'feel') ? feel : null,
+      cost: money == null ? null : Math.round(money * 100) / 100,
       ...watch, note: note.value.trim(), details: fields.value,
     };
   }
@@ -222,7 +226,7 @@ export function createSessionSheet({ getPeople, getSessions, getCurrency }) {
 
       date.value = session?.date ?? today;
       date.max = localDate(Date.now() + 366 * 86_400_000);
-      minutes.value = String(session?.minutes ?? last?.minutes ?? 90);
+      minutes.value = String(session?.minutes ?? last?.minutes ?? sport.defaultMinutes ?? 90);
       feel = session?.feel ?? DEFAULT_FEEL;
       cost.value = session?.cost == null ? '' : String(session.cost);
       avgHr.value = session?.avgHr == null ? '' : String(session.avgHr);
@@ -230,9 +234,15 @@ export function createSessionSheet({ getPeople, getSessions, getCurrency }) {
       calories.value = session?.calories == null ? '' : String(session.calories);
       note.value = session?.note ?? '';
       for (const symbol of form.querySelectorAll('[data-currency]')) symbol.textContent = currencySymbol(getCurrency());
-      setWatchOpen(Boolean(session && (session.avgHr != null || session.maxHr != null || session.calories != null)));
+      // only the fields this sport tracks (sports.js `tracks`)
+      for (const el of form.querySelectorAll('[data-tracks]')) {
+        if (el instanceof HTMLElement) el.hidden = !tracks(sport, /** @type {any} */ (el.dataset.tracks));
+      }
+      form.querySelector('.field-row').classList.toggle('single', !tracks(sport, 'time'));
+      $('watchToggle').hidden = !hasWatch(sport);
+      setWatchOpen(hasWatch(sport) && Boolean(session && (session.avgHr != null || session.maxHr != null || session.calories != null)));
 
-      $('sessionTitle').innerHTML = `${emoji(sport.emoji)} ${escapeHtml(session ? `${sport.name} session` : `New ${sport.name.toLowerCase()} session`)}`;
+      $('sessionTitle').innerHTML = `${sportIcon(sport)}<span>${escapeHtml(session ? `${sport.name} session` : `New ${sport.name.toLowerCase()} session`)}</span>`;
       $('sessionSave').textContent = session ? 'Save' : 'Log session';
       remove.reset();
       $('sessionDelete').innerHTML = `${icon('trash')}<span>Delete</span>`;

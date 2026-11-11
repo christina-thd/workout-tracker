@@ -3,17 +3,17 @@
        Also the source of icon.png and the home-screen icons (art/render.sh). -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#28311f"/>
-      <stop offset="1" stop-color="#12160e"/>
+      <stop offset="0" stop-color="#1d2a22"/>
+      <stop offset="1" stop-color="#0e1511"/>
     </linearGradient>
     <linearGradient id="pulse" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#8ea873" stop-opacity="0.45"/>
-      <stop offset="0.55" stop-color="#b4c99a"/>
-      <stop offset="1" stop-color="#e3ecd6"/>
+      <stop offset="0" stop-color="#2c6b45" stop-opacity="0.45"/>
+      <stop offset="0.55" stop-color="#4fa874"/>
+      <stop offset="1" stop-color="#c4e6cf"/>
     </linearGradient>
     <radialGradient id="glow">
-      <stop offset="0" stop-color="#cfdcbd" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#cfdcbd" stop-opacity="0"/>
+      <stop offset="0" stop-color="#7fc298" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#7fc298" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="512" height="512" rx="116" fill="url(#bg)"/>

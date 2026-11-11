@@ -5,6 +5,6 @@
 
   <g font-family="Inter" font-weight="700" stroke="#0d1022" stroke-linejoin="round" paint-order="stroke">
     <text x="96" y="48" font-size="25" fill="#e8ecf4" stroke-width="4.5">Workout</text>
-    <text x="96" y="78" font-size="25" fill="#b4c99a" stroke-width="4.5">Tracker</text>
+    <text x="96" y="78" font-size="25" fill="#5cb682" stroke-width="4.5">Tracker</text>
   </g>
 </svg>

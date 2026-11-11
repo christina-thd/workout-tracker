@@ -12,10 +12,14 @@
   --muted: #95a0b5;
   --faint: #5d677c;
   /* muted accent so chart colors stand out */
-  --accent: #b4c99a;
-  --accent-strong: #8ea873;
-  --accent-ink: #151b10;
-  --glow: rgb(142 168 115 / 0.28);
+  --accent: #3f8f5f;
+  --accent-light: #5cb682;                       /* the lit side of green gradients */
+  --accent-strong: #2c6b45;
+  --accent-ink: #f2f8f3;
+  --glow: rgb(92 182 130 / 0.45);                /* lighter than the accent, or it vanishes on the dark */
+  /* a filled green button: lit from the top left, with a thin shine along its top edge */
+  --accent-fill: linear-gradient(135deg, var(--accent-light), var(--accent) 45%, var(--accent-strong));
+  --accent-shine: inset 0 1px 0 rgb(255 255 255 / 0.18);
   --danger: #f87171;
   --warn: #fbbf24;
   --good: #34d399;
@@ -61,7 +65,7 @@ body {
   min-height: 100dvh;
   margin: 0;
   background:
-    radial-gradient(120% 50% at 50% -14%, rgb(142 168 115 / 0.09), transparent 62%),
+    radial-gradient(120% 50% at 50% -14%, rgb(92 182 130 / 0.12), transparent 62%),
     var(--bg);
   background-attachment: fixed;
   color: var(--ink);
@@ -100,7 +104,7 @@ svg.icon-filled { fill: currentColor; stroke: none; }
   transition: transform 120ms var(--ease), background 160ms;
 }
 .pill:active { transform: scale(0.97); }
-.pill.primary { background: linear-gradient(135deg, var(--accent), var(--accent-strong)); color: var(--accent-ink); box-shadow: 0 6px 20px -8px var(--glow); }
+.pill.primary { background: var(--accent-fill); color: var(--accent-ink); box-shadow: var(--accent-shine), 0 6px 20px -8px var(--glow); }
 .pill.ghost { background: transparent; border: 1px solid var(--line); color: var(--muted); }
 .pill.danger { background: transparent; border: 1px solid rgb(248 113 113 / 0.35); color: var(--danger); }
 .pill.danger.armed { background: var(--danger); color: #1f0a0a; border-color: transparent; }
@@ -130,7 +134,7 @@ svg.icon-filled { fill: currentColor; stroke: none; }
   font-size: 13px;
   transition: color 200ms, background 200ms;
 }
-.segmented > button.selected { color: var(--accent-ink); background: var(--accent); box-shadow: 0 4px 16px -6px var(--glow); }
+.segmented > button.selected { color: var(--accent-ink); background: var(--accent-fill); box-shadow: var(--accent-shine), 0 4px 16px -6px var(--glow); }
 
 /* ----- sheets ----- */
 

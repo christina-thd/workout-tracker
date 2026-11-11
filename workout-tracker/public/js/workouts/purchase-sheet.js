@@ -4,7 +4,7 @@ import { $, closest, escapeHtml, numberValue } from '../shared/dom.js';
 import { currencySymbol } from '../shared/format.js';
 import { sportOf } from '../shared/sports.js';
 import { isDate, localDate, MAX_COST } from '../shared/workouts.js';
-import { emoji } from '../ui/emoji.js';
+import { sportIcon } from '../ui/emoji.js';
 import { icon } from '../ui/icons.js';
 import { createSheet } from '../ui/sheet.js';
 import { tapTwice } from '../ui/tap-twice.js';
@@ -133,7 +133,7 @@ export function createPurchaseSheet({ getPurchases, getCurrency }) {
       date.value = purchase?.date ?? localDate();
       note.value = purchase?.note ?? '';
       for (const symbol of form.querySelectorAll('[data-currency]')) symbol.textContent = currencySymbol(getCurrency());
-      $('purchaseTitle').innerHTML = `${emoji(sport.emoji)} ${escapeHtml(purchase ? 'Purchase' : `New ${sport.name.toLowerCase()} purchase`)}`;
+      $('purchaseTitle').innerHTML = `${sportIcon(sport)}<span>${escapeHtml(purchase ? 'Purchase' : `New ${sport.name.toLowerCase()} purchase`)}</span>`;
       $('purchaseSave').textContent = purchase ? 'Save' : 'Add purchase';
       remove.reset();
       $('purchaseDelete').innerHTML = `${icon('trash')}<span>Delete</span>`;

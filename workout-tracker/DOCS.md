@@ -14,14 +14,20 @@ top of what every session has: see [Sports](#sports).
 ## Users
 
 Everyone in the house has their own sessions, purchases, players and clubs. The home screen ("Who's this?") has a
-tile per user, with how many sessions they've logged this month: tap yours. Each phone or PC remembers who picked it
+tile per user: tap yours. Each phone or PC remembers who picked it
 last, the sport and the tab they were on, so after the first time it opens straight where you left off.
 
-To switch user, tap your name at the top right (the back button works too). On the home screen, **Add user** adds
+To switch user, tap your name at the top right of your sports (the back button works too). On the home screen, **Add user** adds
 someone, and **⋯** on a tile renames them, changes their emoji, or deletes them with everything of theirs (type
 **delete** to confirm, since it can't be undone).
 
 There are no passwords: anyone can pick anyone. It's for keeping things tidy, not private.
+
+### Choosing your sports
+
+Everyone sees every sport to start with. To keep your list to the ones you do, tap **⚙** next to your name above
+your sports and switch sports on or off. Turning one off only hides it: its sessions and purchases
+are kept, and turning it back on brings them all back. One sport always stays on.
 
 ## Logging a session
 
@@ -31,13 +37,14 @@ session of that sport. Every session has:
 | Field | |
 |-------|-|
 | **Date** | the day of the session |
-| **Minutes** | how long; **1h**, **1h 30m**, **2h** and **3h** fill it in |
+| **Minutes** | how long; **1h**, **1h 30m**, **2h** and **3h** fill it in (some sports have their own) |
 | **How did it feel?** | 😌 Chill, 🙂 Good, 🔥 Intense or 🥵 Exhausting |
 | **Cost** | what the session cost you, in the add-on's currency; leave it empty if you don't know |
-| **Smartwatch** | average and max heart rate (bpm) and calories, as your watch shows them after the session |
+| **Smartwatch** | average and max heart rate (bpm) and calories, as your watch shows them after the session (not every sport) |
 | **Notes** | anything else: what went well, what to work on |
 
-The sport's own details come between them (see [Sports](#sports)). Only the date and minutes are needed.
+The sport's own details come between them (see [Sports](#sports)), and some sports leave fields out. Only the date
+and minutes are needed.
 
 Closing a session (or a purchase) with changes you haven't saved asks first: **Keep editing** or **Discard**.
 
@@ -45,11 +52,11 @@ Tap a session on the **Sessions** tab to change it, or delete it: tap **Delete**
 a few seconds (so it can't happen by accident). The message at the bottom still offers **Undo** for a few seconds.
 Purchases, and names on your lists (× then **Remove?**), work the same way.
 
-## Players and clubs
+## Players, clubs and places
 
-Sports played with others pick partners, opponents and clubs from your own lists, so names are always written the
-same way. Open **Players and clubs** under your sports to add names or take them off (sessions that used a name keep
-it). You can also add a name straight from a session: pick **Add new…** at the bottom of a dropdown.
+Partners, opponents, clubs and places are picked from your own lists, so names are always written the same way. Open
+**Players, clubs and places** under your sports to add names or take them off (sessions that used a name keep it).
+You can also add a name straight from a session: pick **Add new…** at the bottom of a dropdown.
 
 ## Gear
 
@@ -73,7 +80,7 @@ The sessions themselves are on the **Sessions** tab, newest first, by month.
 
 ## Sports
 
-### 🎾 Padel
+### Padel
 
 A padel session also has:
 
@@ -103,6 +110,54 @@ opponents on the grey one. Tap a box and pick the games (0 to 7).
   matches with a result count). The best ratio is first; on a tie, the partner you've played more with.
 
 **Gear kinds:** racket, balls, shoes, clothing, grips, bag, lessons, other.
+
+### Tennis
+
+Tennis works like padel (the score with tie-breaks, the result, win rate and results), with a few differences:
+
+| Field | |
+|-------|-|
+| **Format** | Singles (the default) or Doubles |
+| **Partner** | doubles only, from your players |
+| **Opponent**, **Opponents** | one in singles, two in doubles |
+| **Club**, **Surface**, **Court** | where, from your clubs; hard, clay, grass or carpet; indoor or outdoor |
+
+In singles the score card's rows are **You** and **Opponent**; in doubles, **Your team** and **Opponents**. A new
+session starts as singles, at the same club, surface and court as your last one. **Partners** in the stats counts
+your doubles matches.
+
+**Gear kinds:** racket, strings, balls, shoes, clothing, grips, bag, lessons, other.
+
+### Basketball
+
+Kept simple: no score, club or partner. A basketball session also has:
+
+| Field | |
+|-------|-|
+| **Session** | 🎯 Practice (the default) or 🏆 Game |
+| **Result** | for a game: Won or Lost |
+| **Court** | indoor or outdoor (remembered from your last session) |
+
+**Stats.** Your games add the **Win rate** tile and the **Results** card.
+
+**Gear kinds:** ball, shoes, clothing, bag, lessons, other.
+
+### Snowboard
+
+Different from the others: a snowboard session is the day, how long, how it felt, the **Place** (from your places:
+a resort or a slope, remembered from your last session), the cost and notes. It has no session type, court or
+smartwatch numbers, so its stats leave out heart rate. The duration shortcuts are **2h**, **3h**, **4h** and **6h**,
+and a first session starts at 4h.
+
+**Gear kinds:** board, boots, bindings, helmet, goggles, gloves, clothing, lessons, other.
+
+### Workout
+
+The simplest: just that you trained, and what. A workout is the **Date**, its **Focus** (🦵 Legs, the default,
+💪 Arms or 🏋️ Torso) and notes. No minutes, cost, how it felt or smartwatch, and no Gear tab.
+
+**Stats.** The **Sessions** and **Streak** tiles, and a **Sessions** chart: how many workouts per week (Month,
+3 months) or per month (Year, All).
 
 ## Phone and PC
 

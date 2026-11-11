@@ -34,7 +34,7 @@ workout-tracker/                   Home Assistant add-on containing the app
 │       │            dom, storage
 │       ├── ui/      back, sheet, discard, emoji (Twemoji), emoji-picker, menu (dropdowns), tap-twice, confirm,
 │       │            viewport, toast, icons
-│       └── workouts/ home (who's this?), person-sheet, person-chip, sports-view, lists-sheet (players and clubs), dashboard
+│       └── workouts/ home (who's this?), person-sheet, person-chip, sports-sheet, sports-view, lists-sheet (players and clubs), dashboard
 │                    (tabs, Stats), charts, session-list, gear-list, rows, session-sheet, sport-fields,
 │                    purchase-sheet
 ├── test/                          automated tests (Node's built-in runner, no extra deps):

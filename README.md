@@ -14,7 +14,11 @@ Each sport adds its own details on top of what every session has.
 
 | Sport | What it adds |
 |-------|--------------|
-| 🎾 Padel | Match or training, the score set by set with tie-breaks, result, partner and opponents, club, indoor or outdoor, and who you win with most |
+| Padel | Matches and training, set-by-set scores, partners, opponents and clubs |
+| Tennis | Singles or doubles, set-by-set scores, court surface |
+| Basketball | Practice and games, with results |
+| Snowboard | Days on the slopes, where and what it cost |
+| Workout | A quick log of leg, arm or torso days |
 
 More sports are on the way.
 

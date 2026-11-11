@@ -72,6 +72,18 @@ describe('sessions', () => {
     assert.deepEqual(person.clubs, ['Riverside Courts']);
   });
 
+  test('a sport without a smartwatch keeps no heart rate or calories, and its place goes on the places list', () => {
+    act(padel({ sport: 'snowboard', minutes: 240, avgHr: 140, maxHr: 170, calories: 900, details: { venue: 'Kaimaktsalan' } }));
+    assert.deepEqual([state.sessions[0].avgHr, state.sessions[0].maxHr, state.sessions[0].calories], [null, null, null]);
+    assert.deepEqual(state.people[0].places, ['Kaimaktsalan']);
+  });
+
+  test('a workout keeps no minutes, feel or cost, and needs no minutes', () => {
+    act({ type: 'addSession', personId, sport: 'workout', date: '2026-11-10', feel: 'intense', cost: 5, details: { focus: 'torso' } });
+    const [s] = state.sessions;
+    assert.deepEqual([s.minutes, s.feel, s.cost, s.details.focus], [null, null, null, 'torso']);
+  });
+
   test('bad values are refused and nothing changes', () => {
     for (const bad of [
       { date: '2026-13-01' }, { date: 'yesterday' }, { minutes: 0 }, { minutes: 1.5 }, { minutes: 2000 }, { feel: 'meh' },
@@ -108,6 +120,26 @@ describe('sessions', () => {
     act({ type: 'removeSession', sessionId });
     assert.equal(state.sessions.length, 0);
     assert.throws(() => act({ type: 'removeSession', sessionId }), (err) => err instanceof ActionError && err.status === 404);
+  });
+});
+
+describe('sports on and off', () => {
+  test('turning a sport off hides it and keeps its sessions; on again brings it back', () => {
+    act(padel());
+    act({ type: 'setSportShown', personId, sport: 'padel', shown: false });
+    assert.deepEqual(state.people[0].hiddenSports, ['padel']);
+    assert.equal(state.sessions.length, 1);
+    act({ type: 'setSportShown', personId, sport: 'padel', shown: true });
+    assert.deepEqual(state.people[0].hiddenSports, []);
+  });
+
+  test('the last sport on stays on, and only known sports count', () => {
+    const others = ['padel', 'tennis', 'basketball', 'snowboard'];
+    for (const sport of others) act({ type: 'setSportShown', personId, sport, shown: false });
+    assert.throws(() => act({ type: 'setSportShown', personId, sport: 'workout', shown: false }), ActionError);
+    assert.throws(() => act({ type: 'setSportShown', personId, sport: 'chess', shown: false }), ActionError);
+    assert.throws(() => act({ type: 'setSportShown', personId, sport: 'padel', shown: 'no' }), ActionError);
+    assert.deepEqual(state.people[0].hiddenSports, others);
   });
 });
 

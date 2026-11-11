@@ -1,6 +1,8 @@
 // Sport-specific session fields (choice chips, name pickers, score grid), built from sports.js definitions.
 import { closest, escapeHtml } from '../shared/dom.js';
-import { fieldShows, formatScore, isTiebreakSet, MAX_GAMES, parseScore, scoreResult } from '../shared/sports.js';
+import {
+  fieldShows, formatScore, isTiebreakSet, LISTS, MAX_GAMES, parseScore, partnerField, scoreResult,
+} from '../shared/sports.js';
 import { emoji } from '../ui/emoji.js';
 import { icon } from '../ui/icons.js';
 import { openMenu } from '../ui/menu.js';
@@ -14,6 +16,8 @@ import { toastError } from '../ui/toast.js';
 // Names are prefixed so no real name can clash with NEW or ''.
 const NAME = 'name:';
 const NEW = 'new';
+/** "player", "club", "place". */
+const oneOf = (list) => LISTS.find((l) => l.id === list)?.one ?? 'name';
 const GAMES = Array.from({ length: MAX_GAMES + 1 }, (_, i) => i);
 const TIEBREAK_POINTS = Array.from({ length: 21 }, (_, i) => i); // higher saved values still load
 
@@ -88,7 +92,7 @@ export function createSportFields({ root, getNames, addName }) {
   }
 
   const placeholder = (field, index) => ((field.count ?? 1) > 1
-    ? `${index === 0 ? 'First' : 'Second'} ${field.list === 'clubs' ? 'club' : 'player'}`
+    ? `${index === 0 ? 'First' : 'Second'} ${oneOf(field.list)}`
     : 'None');
 
   function pickHtml(field) {
@@ -99,7 +103,7 @@ export function createSportFields({ root, getNames, addName }) {
       const id = `${field.key}:${i}`;
       if (adding === id) {
         return `<div class="inline-add" data-adding="${id}">
-          <input type="text" class="text-input" maxlength="60" enterkeyhint="done" placeholder="New ${field.list === 'clubs' ? 'club' : 'player'}" aria-label="New name">
+          <input type="text" class="text-input" maxlength="60" enterkeyhint="done" placeholder="New ${oneOf(field.list)}" aria-label="New name">
           <button type="button" class="pill primary" data-add-save>Add</button>
           <button type="button" class="pill ghost" data-add-cancel>Cancel</button></div>`;
       }
@@ -133,11 +137,14 @@ export function createSportFields({ root, getNames, addName }) {
   }
 
   function scoreHtml(field) {
+    // with no teammate (tennis singles) it's you against one opponent
+    const partner = partnerField(sport);
+    const [mine, theirs] = partner && fieldShows(partner, details) ? ['Your team', 'Opponents'] : ['You', 'Opponent'];
     // sides 0/1 are games, 2/3 tie-break points
     const cell = (set, side) => {
       const value = grid[set][side];
       const tiebreak = side > 1;
-      const who = side % 2 ? 'opponents' : 'your team';
+      const who = (side % 2 ? theirs : mine).toLowerCase();
       return `<button type="button" class="select score-cell${tiebreak ? ' tiebreak' : ''}${value == null ? ' empty' : ''}"
         data-set="${set}" data-side="${side}" aria-haspopup="listbox" aria-expanded="false"
         aria-label="Set ${set + 1}${tiebreak ? ' tie-break' : ''}, ${who}">${value ?? '–'}</button>`;
@@ -161,12 +168,12 @@ export function createSportFields({ root, getNames, addName }) {
       </div>
       <div class="score-grid" style="grid-template-columns:${template}">
         <span></span>${columns((set, tiebreak) => (tiebreak ? '<span class="score-head tiebreak-head" title="Tie-break">TB</span>' : head(set)))}
-        <span class="score-dot mine" title="Your team"></span>${row(0)}
-        <span class="score-dot theirs" title="Opponents"></span>${row(1)}
+        <span class="score-dot mine" title="${mine}"></span>${row(0)}
+        <span class="score-dot theirs" title="${theirs}"></span>${row(1)}
       </div>
       <div class="score-card-foot">
-        <span class="score-key"><span class="score-dot mine"></span>Your team</span>
-        <span class="score-key"><span class="score-dot theirs"></span>Opponents</span>
+        <span class="score-key"><span class="score-dot mine"></span>${mine}</span>
+        <span class="score-key"><span class="score-dot theirs"></span>${theirs}</span>
         <span class="score-summary">${done.length ? `Sets ${won}–${lost}` : ''}</span>
       </div>
     </div>`;

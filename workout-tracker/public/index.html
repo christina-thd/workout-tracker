@@ -33,6 +33,7 @@
     <div class="view sports-view" id="sportsView" hidden>
       <header class="top">
         <h1 class="screen-title">Sports</h1>
+        <button type="button" class="icon-button" id="chooseSports" aria-label="Choose your sports" title="Choose your sports"></button>
         <button type="button" class="person-chip" id="sportsPerson"></button>
       </header>
       <div class="sport-list" id="sportList" role="list"></div>
@@ -45,7 +46,6 @@
         <header class="top">
           <button type="button" class="sport-button" id="sportButton"></button>
           <span class="offline-badge" id="offline" title="Not connected to Home Assistant: changes from other screens show up once it's back"></span>
-          <button type="button" class="person-chip" id="personButton"></button>
         </header>
         <div class="segmented view-tabs" id="viewTabs" role="tablist" aria-label="Show">
           <button type="button" role="tab" data-tab="stats">Stats</button>
@@ -91,20 +91,20 @@
             <span class="settings-label">Date</span>
             <input type="date" class="text-input" id="sessionDate" required>
           </label>
-          <label class="field">
+          <label class="field" data-tracks="time">
             <span class="settings-label">Minutes</span>
             <input type="number" class="text-input" id="sessionMinutes" min="1" max="1440" step="1" inputmode="numeric" required>
           </label>
         </div>
-        <div class="chips" id="sessionDurations" role="group" aria-label="How long"></div>
+        <div class="chips" id="sessionDurations" role="group" aria-label="How long" data-tracks="time"></div>
 
-        <p class="settings-label">How did it feel?</p>
-        <div class="feels" id="sessionFeel" role="radiogroup" aria-label="How did it feel?"></div>
+        <p class="settings-label" data-tracks="feel">How did it feel?</p>
+        <div class="feels" id="sessionFeel" role="radiogroup" aria-label="How did it feel?" data-tracks="feel"></div>
 
         <!-- sport-specific fields -->
         <div class="sport-fields" id="sportFields"></div>
 
-        <label class="field">
+        <label class="field" data-tracks="cost">
           <span class="settings-label">Cost (optional)</span>
           <span class="money-field">
             <span class="money-symbol" data-currency></span>
@@ -186,13 +186,28 @@
     </section>
   </div>
 
+  <!-- the user's sports, on or off (js/workouts/sports-sheet.js) -->
+  <div class="layer" id="sportsLayer" hidden>
+    <div class="backdrop" data-close></div>
+    <section class="sheet sports-sheet" role="dialog" aria-modal="true" aria-labelledby="sportsTitle">
+      <div class="grabber" data-drag data-close></div>
+      <div class="sheet-head" data-drag>
+        <h2 class="sheet-title" id="sportsTitle">Your sports</h2>
+        <button type="button" class="sheet-close" data-close>Done</button>
+      </div>
+      <div class="sheet-body">
+        <ul class="toggle-list" id="sportToggles"></ul>
+      </div>
+    </section>
+  </div>
+
   <!-- players and clubs sheet -->
   <div class="layer" id="listsLayer" hidden>
     <div class="backdrop" data-close></div>
     <section class="sheet lists-sheet" role="dialog" aria-modal="true" aria-labelledby="listsTitle">
       <div class="grabber" data-drag data-close></div>
       <div class="sheet-head" data-drag>
-        <h2 class="sheet-title" id="listsTitle">Players and clubs</h2>
+        <h2 class="sheet-title" id="listsTitle">Players, clubs and places</h2>
         <button type="button" class="sheet-close" data-close>Done</button>
       </div>
       <div class="sheet-body">

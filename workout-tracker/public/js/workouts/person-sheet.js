@@ -129,6 +129,7 @@ export function createPersonSheet({ getPeople, getSessions, onCreated, onDeleted
   });
 
   return {
+    /** @param {string | null} [id]  null: someone new */
     open(id = null) {
       const person = id ? getPeople().find((p) => p.id === id) : null;
       personId = person?.id ?? null;

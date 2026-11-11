@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="2 2 32 32">
+  <!-- A dumbbell, flat like the Twemoji set the rest of the app uses (Unicode has no weights emoji). -->
+  <g transform="rotate(-35 18 18)">
+    <!-- bar -->
+    <rect x="8" y="15.6" width="20" height="4.8" rx="1.6" fill="#CCD6DD"/>
+    <!-- plates: big inner ones, smaller outer ones -->
+    <rect x="6.6" y="7" width="6" height="22" rx="2" fill="#3B88C3"/>
+    <rect x="23.4" y="7" width="6" height="22" rx="2" fill="#3B88C3"/>
+    <rect x="2.6" y="10.5" width="4.6" height="15" rx="1.8" fill="#55ACEE"/>
+    <rect x="28.8" y="10.5" width="4.6" height="15" rx="1.8" fill="#55ACEE"/>
+    <!-- shine -->
+    <rect x="7.8" y="9" width="1.6" height="18" rx="0.8" fill="#88C9F9"/>
+    <rect x="24.6" y="9" width="1.6" height="18" rx="0.8" fill="#88C9F9"/>
+  </g>
+</svg>
