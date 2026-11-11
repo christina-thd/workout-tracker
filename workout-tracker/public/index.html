@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Workout Tracker</title>
+  <link rel="icon" href="img/logo.svg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="img/icon-180.png">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Workouts">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- home -->
+    <div class="view home-view" id="homeView" hidden>
+      <img class="home-logo" src="img/logo.svg" alt="" width="56" height="56">
+      <h1>Who's this?</h1>
+      <div class="people" id="people"></div>
+      <button type="button" class="pill ghost" id="addPerson"></button>
+    </div>
+
+    <!-- sports -->
+    <div class="view sports-view" id="sportsView" hidden>
+      <header class="top">
+        <h1 class="screen-title">Sports</h1>
+        <button type="button" class="person-chip" id="sportsPerson"></button>
+      </header>
+      <div class="sport-list" id="sportList" role="list"></div>
+      <button type="button" class="link-row" id="openLists"></button>
+    </div>
+
+    <!-- dashboard -->
+    <div class="view" id="dashboardView" hidden>
+      <div class="dash-head">
+        <header class="top">
+          <button type="button" class="sport-button" id="sportButton"></button>
+          <span class="offline-badge" id="offline" title="Not connected to Home Assistant: changes from other screens show up once it's back"></span>
+          <button type="button" class="person-chip" id="personButton"></button>
+        </header>
+        <div class="segmented view-tabs" id="viewTabs" role="tablist" aria-label="Show">
+          <button type="button" role="tab" data-tab="stats">Stats</button>
+          <button type="button" role="tab" data-tab="sessions">Sessions</button>
+          <button type="button" role="tab" data-tab="gear">Gear</button>
+        </div>
+      </div>
+
+      <main class="dashboard">
+        <section class="panel" id="statsPanel" data-panel="stats" role="tabpanel">
+          <div class="segmented range-tabs" id="rangeTabs" role="radiogroup" aria-label="Range"></div>
+          <div class="tiles" id="tiles" aria-label="Totals"></div>
+          <div class="charts" id="charts"></div>
+        </section>
+        <section class="panel" id="sessionsPanel" data-panel="sessions" role="tabpanel" hidden>
+          <div id="sessionList"></div>
+        </section>
+        <section class="panel" id="gearPanel" data-panel="gear" role="tabpanel" hidden>
+          <div id="gearList"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <button type="button" class="fab" id="addButton" hidden></button>
+  <!-- chart tooltip -->
+  <div class="chart-tip" id="chartTip" role="tooltip" hidden></div>
+  <!-- dropdown menu -->
+  <div class="menu" id="menu" role="listbox" hidden></div>
+
+  <!-- session sheet -->
+  <div class="layer" id="sessionLayer" hidden>
+    <div class="backdrop" data-close></div>
+    <section class="sheet session-sheet" role="dialog" aria-modal="true" aria-labelledby="sessionTitle">
+      <div class="grabber" data-drag data-close></div>
+      <div class="sheet-head" data-drag>
+        <h2 class="sheet-title" id="sessionTitle"></h2>
+        <button type="button" class="sheet-close" data-close>Close</button>
+      </div>
+      <form class="sheet-body" id="sessionForm" autocomplete="off" novalidate>
+        <div class="field-row">
+          <label class="field">
+            <span class="settings-label">Date</span>
+            <input type="date" class="text-input" id="sessionDate" required>
+          </label>
+          <label class="field">
+            <span class="settings-label">Minutes</span>
+            <input type="number" class="text-input" id="sessionMinutes" min="1" max="1440" step="1" inputmode="numeric" required>
+          </label>
+        </div>
+        <div class="chips" id="sessionDurations" role="group" aria-label="How long"></div>
+
+        <p class="settings-label">How did it feel?</p>
+        <div class="feels" id="sessionFeel" role="radiogroup" aria-label="How did it feel?"></div>
+
+        <!-- sport-specific fields -->
+        <div class="sport-fields" id="sportFields"></div>
+
+        <label class="field">
+          <span class="settings-label">Cost (optional)</span>
+          <span class="money-field">
+            <span class="money-symbol" data-currency></span>
+            <input type="number" id="sessionCost" min="0" step="0.01" inputmode="decimal" placeholder="0" aria-label="Cost">
+          </span>
+        </label>
+
+        <button type="button" class="fold-toggle" id="watchToggle" aria-expanded="false" aria-controls="watchFields"></button>
+        <div class="watch-fields" id="watchFields" hidden>
+          <label class="field">
+            <span class="settings-label">Avg heart rate</span>
+            <input type="number" class="text-input" id="sessionAvgHr" min="30" max="250" step="1" inputmode="numeric" placeholder="bpm">
+          </label>
+          <label class="field">
+            <span class="settings-label">Max heart rate</span>
+            <input type="number" class="text-input" id="sessionMaxHr" min="30" max="250" step="1" inputmode="numeric" placeholder="bpm">
+          </label>
+          <label class="field">
+            <span class="settings-label">Calories</span>
+            <input type="number" class="text-input" id="sessionCalories" min="0" max="10000" step="1" inputmode="numeric" placeholder="kcal">
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="settings-label">Notes (optional)</span>
+          <textarea class="note-input" id="sessionNote" rows="2" maxlength="2000" placeholder="What went well, what to work on…"></textarea>
+        </label>
+
+        <p class="form-error" id="sessionError" role="alert" hidden></p>
+        <div class="sheet-actions">
+          <button type="button" class="pill danger" id="sessionDelete"></button>
+          <button type="submit" class="pill primary" id="sessionSave"></button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- purchase sheet -->
+  <div class="layer" id="purchaseLayer" hidden>
+    <div class="backdrop" data-close></div>
+    <section class="sheet purchase-sheet" role="dialog" aria-modal="true" aria-labelledby="purchaseTitle">
+      <div class="grabber" data-drag data-close></div>
+      <div class="sheet-head" data-drag>
+        <h2 class="sheet-title" id="purchaseTitle"></h2>
+        <button type="button" class="sheet-close" data-close>Close</button>
+      </div>
+      <form class="sheet-body" id="purchaseForm" autocomplete="off" novalidate>
+        <label class="field">
+          <span class="settings-label">What did you buy?</span>
+          <input type="text" class="text-input" id="purchaseItem" maxlength="80" enterkeyhint="next" placeholder="e.g. a new racket, 3 tubes of balls">
+        </label>
+        <div class="field">
+          <span class="settings-label">Kind</span>
+          <div class="chips" id="purchaseCategory" role="radiogroup" aria-label="Kind"></div>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span class="settings-label">Cost</span>
+            <span class="money-field">
+              <span class="money-symbol" data-currency></span>
+              <input type="number" id="purchaseCost" min="0" step="0.01" inputmode="decimal" placeholder="0" aria-label="Cost">
+            </span>
+          </label>
+          <label class="field">
+            <span class="settings-label">Date</span>
+            <input type="date" class="text-input" id="purchaseDate" required>
+          </label>
+        </div>
+        <label class="field">
+          <span class="settings-label">Notes (optional)</span>
+          <textarea class="note-input" id="purchaseNote" rows="2" maxlength="2000" placeholder="Where from, size, model…"></textarea>
+        </label>
+        <p class="form-error" id="purchaseError" role="alert" hidden></p>
+        <div class="sheet-actions">
+          <button type="button" class="pill danger" id="purchaseDelete"></button>
+          <button type="submit" class="pill primary" id="purchaseSave"></button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- players and clubs sheet -->
+  <div class="layer" id="listsLayer" hidden>
+    <div class="backdrop" data-close></div>
+    <section class="sheet lists-sheet" role="dialog" aria-modal="true" aria-labelledby="listsTitle">
+      <div class="grabber" data-drag data-close></div>
+      <div class="sheet-head" data-drag>
+        <h2 class="sheet-title" id="listsTitle">Players and clubs</h2>
+        <button type="button" class="sheet-close" data-close>Done</button>
+      </div>
+      <div class="sheet-body">
+        <div class="segmented" id="listsTabs" role="tablist" aria-label="List"></div>
+        <form class="add-row" id="listsForm" autocomplete="off">
+          <input type="text" class="text-input" id="listsName" maxlength="60" enterkeyhint="done" aria-label="Name">
+          <button type="submit" class="add-send" id="listsAdd" aria-label="Add"></button>
+        </form>
+        <ul class="name-list" id="listsNames"></ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- person sheet -->
+  <div class="layer" id="personLayer" hidden>
+    <div class="backdrop" data-close></div>
+    <section class="sheet person-sheet" role="dialog" aria-modal="true" aria-labelledby="personTitle">
+      <div class="grabber" data-drag data-close></div>
+      <div class="sheet-head" data-drag>
+        <h2 class="sheet-title" id="personTitle"></h2>
+        <button type="button" class="sheet-close" data-close>Close</button>
+      </div>
+      <form class="sheet-body" id="personForm" autocomplete="off">
+        <div class="name-row">
+          <span class="emoji-current" id="personEmoji" aria-hidden="true"></span>
+          <input type="text" class="text-input" id="personName" maxlength="40" enterkeyhint="done" placeholder="Name" aria-label="Name">
+        </div>
+        <p class="settings-label">Emoji</p>
+        <div class="emojis" id="personEmojis" role="radiogroup" aria-label="Emoji"></div>
+        <label class="settings-label" for="personEmojiCustom">Not in the list?</label>
+        <input type="text" class="text-input emoji-custom" id="personEmojiCustom" maxlength="16" autocomplete="off"
+          placeholder="Use your emoji keyboard">
+        <button type="submit" class="pill primary" id="personSave"></button>
+        <div class="sheet-extra" id="personExtra">
+          <button type="button" class="pill danger" id="personDelete"></button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- delete confirmation -->
+  <div class="layer" id="confirmLayer" hidden>
+    <div class="backdrop" data-close></div>
+    <section class="sheet confirm-sheet" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+      <div class="grabber" data-drag data-close></div>
+      <div class="sheet-head" data-drag>
+        <h2 class="sheet-title" id="confirmTitle"></h2>
+        <button type="button" class="sheet-close" data-close>Cancel</button>
+      </div>
+      <form class="sheet-body" id="confirmForm" autocomplete="off">
+        <p class="confirm-text" id="confirmText"></p>
+        <label class="settings-label" for="confirmInput" id="confirmLabel"></label>
+        <input type="text" class="text-input" id="confirmInput" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="delete">
+        <button type="submit" class="pill danger armed" id="confirmGo" disabled></button>
+      </form>
+    </section>
+  </div>
+
+  <!-- closing a sheet with unsaved changes (js/ui/discard.js) -->
+  <div class="dialog-layer" id="discardLayer" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="discardTitle" aria-describedby="discardText">
+      <h2 class="dialog-title" id="discardTitle">Discard changes?</h2>
+      <p class="dialog-text" id="discardText">What you changed hasn't been saved.</p>
+      <div class="dialog-actions">
+        <button type="button" class="pill danger" id="discardGo">Discard</button>
+        <button type="button" class="pill primary" id="discardKeep">Keep editing</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+// 24×24 line icons in currentColor.
+
+const PATHS = {
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  minus: '<path d="M5 12h14"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  dots: '<path d="M6 12h.01M12 12h.01M18 12h.01"/>',
+  trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  chevron: '<path d="m7 10 5 5 5-5"/>',
+  back: '<path d="M15 6l-6 6 6 6"/>',
+  forward: '<path d="m9 6 6 6-6 6"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  calendar: '<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  heart: '<path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/><path d="M7 12.5h2.5l1.5-2.5 2 4 1.5-1.5H17"/>',
+  flame: '<path d="M12 21c-3.6 0-6-2.4-6-5.8 0-3.4 2.6-5.2 3.4-8.2.9 1.6 1.4 2.6 1.6 4 1.3-.9 2.2-2.6 2.4-4.5 2.4 2 4.6 5 4.6 8.7 0 3.4-2.4 5.8-6 5.8z"/>',
+  coin: '<circle cx="12" cy="12" r="8.5"/><path d="M14.8 9.2a3.4 3.4 0 1 0 0 5.6M8 11h5M8 13.2h5"/>',
+  trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4v3h-4z"/>',
+  streak: '<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',
+  watch: '<rect x="7" y="7" width="10" height="10" rx="3"/><path d="M9 7l.6-3.5h4.8L15 7M9 17l.6 3.5h4.8L15 17M12 10v2.2l1.4 1"/>',
+  note: '<path d="M5 4h10l4 4v12H5z"/><path d="M9 12h6M9 16h4"/>',
+  users: '<circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M15.5 5.6a3 3 0 0 1 0 5.8M17.5 14.4c1.6.7 2.6 2.3 3 4.6"/>',
+  bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
+  offline: '<path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0M5 12.9a10 10 0 0 1 4.2-2.6M19 12.9a10 10 0 0 0-2.2-1.6M2 9.3a15 15 0 0 1 4.3-2.8M22 9.3A15 15 0 0 0 10.5 5.1"/><path d="M12 20h.01"/>',
+};
+
+export function icon(name) {
+  return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${PATHS[name] ?? ''}</svg>`;
+}

@@ -1,15 +1,23 @@
+# Dependencies
 node_modules/
-__pycache__/
-*.pyc
-.venv/
-venv/
+
+# Local workout data (the saved people and sessions, written by the dev server)
+workout-tracker/data/
+
+# Secrets
 .env
-*.db
-*.sqlite
-data/
-dist/
-build/
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local tooling
+.claude/
 .vscode/
 .idea/
+
+# OS files
 .DS_Store
 Thumbs.db
+desktop.ini

@@ -1,0 +1,51 @@
+workout-tracker/                   Home Assistant add-on containing the app
+                                   (in the repository it sits next to repository.yaml and the repo README)
+├── config.yaml                    add-on definition: version, ingress (port 3400), direct ports (3400, https 3401),
+│                                  options (currency, ssl, certfile, keyfile)
+├── Dockerfile                     Home Assistant base image + Node.js, copies src/ and public/
+├── run.sh                         bashio: sets STATE_FILE, PORT and CURRENCY (and https with the ssl option), starts the server
+├── README.md                      add-on store page: features, install, options
+├── DOCS.md                        add-on Documentation tab: people, logging, the dashboard, phone and PC
+├── CHANGELOG.md                   release notes (shown in Home Assistant)
+├── icon.png, logo.png             add-on store icon (128×128) and banner (250×100)
+├── art/                           store-logo.svg, render.sh (PNG images from the SVGs)
+├── package.json                   version, scripts (start, dev, test, lint, typecheck, check), dev tools only
+├── eslint.config.js               lint rules (npm run lint)
+├── tsconfig.json                  type checking of the JavaScript from JSDoc, nothing compiled (npm run typecheck)
+├── src/                           server (Node, no framework, no dependencies)
+│   ├── server.js                  entry point: http (and https), graceful shutdown
+│   ├── config.js                  environment variables (PORT, HOST, STATE_FILE, CURRENCY, HTTPS_PORT, TLS_CERT, TLS_KEY)
+│   ├── app.js                     HTTP routes: page, static files, API
+│   ├── workouts/state.js          state shape, repairing saved data, view for screens
+│   ├── workouts/actions.js        every action, validated
+│   ├── store.js                   safe JSON saving (atomic, debounced)
+│   ├── sse.js                     live updates to all screens
+│   ├── static.js                  safe static file serving
+│   └── tls.js                     https certificate, reloaded when renewed
+├── public/                        browser (plain ES modules, no build step)
+│   ├── index.html                 the page (markup only)
+│   ├── manifest.webmanifest       "Add to Home Screen" opens it like an app
+│   ├── css/   base.css (theme, chart colors), app.css
+│   ├── img/   logo.svg, icon-180/192/512.png
+│   └── js/
+│       ├── app.js                 entry: latest view, who and what you're looking at, the three screens, wiring
+│       ├── shared/  workouts.js (people, feels, limits, dates, emoji) and sports.js (sports, their fields and gear,
+│       │            lists, scores): used by the server too; stats.js (ranges, totals, chart series), format, api,
+│       │            dom, storage
+│       ├── ui/      back, sheet, discard, emoji (Twemoji), emoji-picker, menu (dropdowns), tap-twice, confirm,
+│       │            viewport, toast, icons
+│       └── workouts/ home (who's this?), person-sheet, person-chip, sports-view, lists-sheet (players and clubs), dashboard
+│                    (tabs, Stats), charts, session-list, gear-list, rows, session-sheet, sport-fields,
+│                    purchase-sheet
+├── test/                          automated tests (Node's built-in runner, no extra deps):
+│                                  actions, state, sports, stats, store, http, tls, addon packaging (fixtures/: test
+│                                  certificate)
+└── docs/
+    ├── DEVELOPMENT.md             dev setup, architecture, adding a sport, releasing, local Docker test
+    └── _project_architecture.txt  this overview
+
+Next to it in the repository: repository.yaml and README.md (the add-on repository),
+.github/workflows/pull-request.yml (version goes up; lint, types and tests), .gitignore, .gitattributes (Unix line
+endings for the container files)
+
+Not in the repository: node_modules/ (npm install), data/ (local saved sessions)

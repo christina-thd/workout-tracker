@@ -1,0 +1,26 @@
+{
+  "name": "workout-tracker",
+  "version": "1.0.0",
+  "description": "Padel and workout log with charts, per person, packaged as a Home Assistant add-on",
+  "private": true,
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "lint": "eslint .",
+    "typecheck": "tsc -p .",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.4",
+    "eslint": "^10.11.0",
+    "globals": "^17.13.0",
+    "typescript": "^7.0.2"
+  }
+}
