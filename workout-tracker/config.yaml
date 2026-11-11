@@ -1,6 +1,6 @@
 name: "Workout Tracker"
 description: "Log your workouts and sports, like padel, tennis, basketball, snowboard and the gym, with stats on how you're doing"
-version: "1.1.0"
+version: "1.2.0"
 slug: "workout_tracker"
 init: false
 arch:
@@ -12,19 +12,19 @@ arch:
 startup: application
 boot: auto
 ingress: true
-ingress_port: 3400
-# Optional direct address (http://<homeassistant-ip>:3400/), e.g. for "Add to Home Screen" on a phone
+ingress_port: 3500
+# Optional direct address (http://<homeassistant-ip>:3500/), e.g. for "Add to Home Screen" on a phone
 # or a browser tab on a PC. Not needed for the Home Assistant sidebar or app.
 ports:
-  3400/tcp: 3400
-  3401/tcp: 3401
+  3500/tcp: 3500
+  3501/tcp: 3501
 ports_description:
-  3400/tcp: "Web interface (not needed for the Home Assistant sidebar)"
-  3401/tcp: "Secure web interface, with the ssl option (to install it as an app on Android)"
+  3500/tcp: "Web interface (not needed for the Home Assistant sidebar)"
+  3501/tcp: "Secure web interface, with the ssl option (to install it as an app on Android)"
 # Read-only access to the "ssl" folder, for Home Assistant's own certificate (see DOCS.md)
 map:
   - ssl:ro
-panel_icon: "mdi:tennis"
+panel_icon: "mdi:pulse"
 panel_title: "Workouts"
 options:
   currency: EUR

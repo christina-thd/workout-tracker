@@ -5,7 +5,7 @@ dependencies; `npm install` only brings the dev tools (ESLint, TypeScript as a c
 
 ```sh
 npm install         # the dev tools
-npm run dev         # http://localhost:3400, restarts on changes
+npm run dev         # http://localhost:3500, restarts on changes
 npm test            # unit, HTTP and add-on packaging tests (Node's built-in test runner)
 npm run lint        # ESLint (eslint.config.js)
 npm run typecheck   # type checks the JavaScript from its JSDoc comments (tsconfig.json); nothing is compiled
@@ -14,15 +14,15 @@ npm run check       # all three, as the pull request checks do
 
 | Variable     | Default              | Purpose                                 |
 |--------------|----------------------|-----------------------------------------|
-| `PORT`       | `3400`               | Port to listen on                       |
+| `PORT`       | `3500`               | Port to listen on                       |
 | `HOST`       | `0.0.0.0`            | Interface to bind                       |
 | `STATE_FILE` | `data/workouts.json` | Where users, sessions and purchases are saved |
 | `CURRENCY`   | `EUR`                | What costs are shown in (ISO 4217 code) |
-| `HTTPS_PORT`, `TLS_CERT`, `TLS_KEY` | off | Also serve https (PEM certificate and key, reloaded when renewed); the add-on uses 3401 with Home Assistant's certificate (`ssl` option) |
+| `HTTPS_PORT`, `TLS_CERT`, `TLS_KEY` | off | Also serve https (PEM certificate and key, reloaded when renewed); the add-on uses 3501 with Home Assistant's certificate (`ssl` option) |
 
 The server doesn't know about Home Assistant: in the add-on, `run.sh` sets these variables.
 
-To try it on your phone while developing, open `http://<your-pc-ip>:3400/` on the same Wi-Fi.
+To try it on your phone while developing, open `http://<your-pc-ip>:3500/` on the same Wi-Fi.
 
 ## Layout
 
@@ -183,5 +183,5 @@ docker run --rm -v "$PWD:/addon" -w /addon alpine:3.20 sh art/render.sh
 
 ```sh
 docker build --build-arg BUILD_ARCH=amd64 -t workout-tracker .    # BUILD_FROM defaults to the Home Assistant base image
-docker run --rm -p 3400:3400 -v workout-tracker-data:/data workout-tracker
+docker run --rm -p 3500:3500 -v workout-tracker-data:/data workout-tracker
 ```

@@ -1,6 +1,6 @@
 {
   "name": "workout-tracker",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Workout and sports log with stats, per user, packaged as a Home Assistant add-on",
   "private": true,
   "type": "module",

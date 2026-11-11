@@ -19,8 +19,8 @@ COPY run.sh /
 RUN chmod a+x /run.sh
 
 # Web interface (Home Assistant ingress, and the optional direct port), and https with the ssl option
-EXPOSE 3400/tcp
-EXPOSE 3401/tcp
+EXPOSE 3500/tcp
+EXPOSE 3501/tcp
 
 # Runs as root: the sessions are saved in /data, which Home Assistant mounts owned by root.
 CMD [ "/run.sh" ]

@@ -164,7 +164,7 @@ The simplest: just that you trained, and what. A workout is the **Date**, its **
 Everything you change shows up straight away on every screen that has the tracker open. If the connection to Home
 Assistant is lost for more than a few seconds, an **Offline** badge shows at the top; it reconnects by itself.
 
-To have it like an app on your phone, open the direct address `http://<your-homeassistant-ip>:3400/` in the browser
+To have it like an app on your phone, open the direct address `http://<your-homeassistant-ip>:3500/` in the browser
 and choose **Add to Home Screen**. It works in the Home Assistant app too, from the sidebar. On a PC, press **n** to add
 a session (a purchase on the Gear tab) and Escape to close it.
 
@@ -180,10 +180,10 @@ already has one for your own domain (e.g. Let's Encrypt, in its `ssl` folder), t
    `ssl` folder (`fullchain.pem` and `privkey.pem` by default). Restart the add-on.
 2. Make your domain point to Home Assistant's address on your home network, e.g. with a DNS rewrite in your router or
    AdGuard Home (`ha.example.com` → your Home Assistant's IP address).
-3. On the phone, open `https://<your-domain>:3401/` in Chrome, then ⋮ → **Install app**.
+3. On the phone, open `https://<your-domain>:3501/` in Chrome, then ⋮ → **Install app**.
 
-Don't forward port 3401 on your router: there are no passwords, so keep it on your home network. The plain address on
-port 3400 keeps working as before, and a renewed certificate is picked up by itself.
+Don't forward port 3501 on your router: there are no passwords, so keep it on your home network. The plain address on
+port 3500 keeps working as before, and a renewed certificate is picked up by itself.
 
 ## Currency
 

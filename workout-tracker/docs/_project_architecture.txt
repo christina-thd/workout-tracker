@@ -1,6 +1,6 @@
 workout-tracker/                   Home Assistant add-on containing the app
                                    (in the repository it sits next to repository.yaml and the repo README)
-├── config.yaml                    add-on definition: version, ingress (port 3400), direct ports (3400, https 3401),
+├── config.yaml                    add-on definition: version, ingress (port 3500), direct ports (3500, https 3501),
 │                                  options (currency, ssl, certfile, keyfile)
 ├── Dockerfile                     Home Assistant base image + Node.js, copies src/ and public/
 ├── run.sh                         bashio: sets STATE_FILE, PORT and CURRENCY (and https with the ssl option), starts the server

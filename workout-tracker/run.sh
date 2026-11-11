@@ -3,13 +3,13 @@
 # People and their sessions are kept in the add-on's persistent /data folder
 export STATE_FILE="/data/workouts.json"
 # Must match ingress_port in config.yaml
-export PORT=3400
+export PORT=3500
 # The currency costs are shown in (e.g. EUR, GBP, USD)
 export CURRENCY="$(bashio::config 'currency')"
 
 # With the "ssl" option: https on a second port with Home Assistant's own certificate (e.g. Let's Encrypt,
 # in the ssl folder), so Android can install the app. It's opened by the certificate's domain name,
-# e.g. https://ha.example.com:3401. The server reloads it by itself when it's renewed.
+# e.g. https://ha.example.com:3501. The server reloads it by itself when it's renewed.
 # Only the file name counts, so "fullchain.pem", "/ssl/fullchain.pem" and "../../ssl/fullchain.pem" are the same.
 if bashio::config.true 'ssl'; then
     CERTFILE="$(bashio::config 'certfile')"
@@ -17,7 +17,7 @@ if bashio::config.true 'ssl'; then
     CERTFILE="/ssl/${CERTFILE##*/}"
     KEYFILE="/ssl/${KEYFILE##*/}"
     if [ -f "${CERTFILE}" ] && [ -f "${KEYFILE}" ]; then
-        export HTTPS_PORT=3401
+        export HTTPS_PORT=3501
         export TLS_CERT="${CERTFILE}"
         export TLS_KEY="${KEYFILE}"
         bashio::log.info "https on port ${HTTPS_PORT} with ${CERTFILE}"

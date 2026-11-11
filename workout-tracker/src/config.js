@@ -16,7 +16,7 @@ export function loadConfig(env = process.env) {
 
   return Object.freeze({
     version: pkg.version,
-    port: parsePort(env.PORT) ?? 3400,
+    port: parsePort(env.PORT) ?? 3500,
     host: env.HOST || '0.0.0.0',
     httpsPort: parsePort(env.HTTPS_PORT),
     tlsCert: env.TLS_CERT || null,

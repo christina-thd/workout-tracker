@@ -27,9 +27,9 @@ Log your workouts and sports, what you buy for them, and see how you're doing, f
 | Option | Default | Description |
 |--------|---------|-------------|
 | currency | EUR | The currency costs are in (EUR, GBP, USD, …) |
-| ssl | false | Also serve https on port 3401 with Home Assistant's certificate (see the Documentation tab) |
+| ssl | false | Also serve https on port 3501 with Home Assistant's certificate (see the Documentation tab) |
 | certfile | fullchain.pem | Certificate in Home Assistant's `ssl` folder |
 | keyfile | privkey.pem | Its key |
 
-Open **Workouts** in the sidebar, or `http://<your-homeassistant-ip>:3400/`.
+Open **Workouts** in the sidebar, or `http://<your-homeassistant-ip>:3500/`.
 For development, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
